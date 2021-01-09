@@ -1,0 +1,10 @@
+mutation taxiOrder ($input: TaxiOrderInput!) {
+  taxiOrder (input: $input) {
+    fullName
+    mobilePhone
+    dateOfArrival
+    airport
+    terminal
+    airflightNumber
+  }
+}

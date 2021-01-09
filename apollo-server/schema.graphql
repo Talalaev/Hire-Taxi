@@ -1,0 +1,29 @@
+"Included scalars"
+scalar JSON
+
+type TaxiOrder {
+  fullName: String!
+  mobilePhone: String!
+  dateOfArrival: String!
+  airport: String!
+  terminal: String!
+  airflightNumber: String!
+}
+
+input TaxiOrderInput {
+  fullName: String!
+  mobilePhone: String!
+  dateOfArrival: String!
+  airport: String!
+  terminal: String!
+  airflightNumber: String!
+}
+
+type Query {
+  "Test query with a parameter"
+  hello(name: String): String!
+}
+
+type Mutation {
+  taxiOrder (input: TaxiOrderInput!): TaxiOrder!
+}
