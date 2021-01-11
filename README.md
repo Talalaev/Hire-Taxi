@@ -22,3 +22,17 @@ run graphql server `npm run apollo:start`
   - Создание кастомных полей для аропорта должно быть инкапсулировано 
   внутри кода создающего аэропорт и иметь возможность простого редактирования
 - Нужно предусмотреть больше форматов для номера рейса (не только `\w\w ?\d\d\d?\d?`).
+
+## Change log
+
+### 11.01.2021
+
+- Constants List has packed into separate file
+- Data structure of airport has packed into separate file. All things that
+bind with airport list has situated in one place.
+- Code that works with graphql and variables with that code interacts 
+has packed in one file.
+- Code that launch animation don't interfere into `HireTaxi.vue` component.
+- `HireTaxi.vue` component includes only form validation code.
+- Scss preprocessor has added.
+- Css helpers has situated in separated file.
