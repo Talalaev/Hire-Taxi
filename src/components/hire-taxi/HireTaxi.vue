@@ -2,7 +2,7 @@
   <div class="hire-taxi">
     <div class="hire-taxi__fog"></div>
     <div class="hire-taxi__content">
-      <h1>
+      <h1 class="hire-taxi__title">
         <span>Hire Taxi </span>
         <IconTaxi :class="{'taxi-far-away': isTaxiFarAway}"></IconTaxi>
       </h1>
@@ -58,18 +58,22 @@
 </template>
 
 <script>
-  import IconTaxi from './IconTaxi.vue'
+  import IconTaxi from '../IconTaxi.vue'
   import moment from 'moment'
-  import TAXI_ORDER from '../graphql/TaxiOrder.gql'
-
-  export const HEATHROW = 'Heathrow'
-  export const GATWICK = 'Gatwick'
+  import { airportsMixin } from "./mixins/airports.mixin"
+  import { methodsMixin } from "./mixins/methods.mixin"
+  import { runAnimationsMixin } from "./mixins/run-animations.mixin"
 
   export default {
     name: "HireTaxi",
     components: {
       IconTaxi
     },
+    mixins: [
+      airportsMixin,
+      methodsMixin,
+      runAnimationsMixin
+    ],
     data() {
       return {
         hireForm: {
@@ -80,11 +84,6 @@
           terminal: '',
           airflightNumber: ''
         },
-        airports: [
-          {id: 1, name: HEATHROW, terminals: ['1', '2', '3', '4', 'not sure']},
-          {id: 2, name: GATWICK, terminals: null},
-        ],
-        isTaxiFarAway: true,
         rules: {
           fullName: [
             { required: true, message: 'Please input full name', trigger: 'blur' }
@@ -105,15 +104,14 @@
           ]
         },
         pickerOptions: {
-          disabledDate(time) {
-            return +moment(moment(time).format('YYYY-MM-DD')) < +moment(moment().format('YYYY-MM-DD'));
+          disabledDate(calendarTime) {
+            const todayMs = +moment(moment().format('YYYY-MM-DD'));
+            const calendarTimeMs = +moment(moment(calendarTime).format('YYYY-MM-DD'));
+
+            return calendarTimeMs < todayMs;
           }
         },
-        loading: false
       };
-    },
-    mounted() {
-      setTimeout(() => this.isTaxiFarAway = false, 500);
     },
     computed: {
       terminalShown() {
@@ -129,34 +127,14 @@
           .terminals;
       }
     },
-    methods: {
-      orderTaxi() {
-        this.$refs['form'].validate((valid) => {
-          if (valid) {
-            this.loading = true;
-            localStorage.setItem('taxiOrder', this.hireForm);
-            this.$apollo
-              .mutate({
-                mutation: TAXI_ORDER,
-                variables: {
-                  input: this.hireForm
-                }
-              })
-              .then(() => this.$confirm('You will be redirected to unbiased.co.uk'))
-              .then(() => window.open('https://www.unbiased.co.uk/', '_blank'))
-              .finally(() => this.loading = false);
-          } else {
-            return false;
-          }
-        });
-      },
-    }
   }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+  @import "../../assets/styles/helpers";
+
   .hire-taxi {
-    background-image: url("../assets/airport.jpg");
+    background-image: url("../../assets/airport.jpg");
     background-size: auto 120%;
     background-repeat: no-repeat;
     background-position: center center;
@@ -165,6 +143,29 @@
     left: 0;
     right: 0;
     bottom: 0;
+
+    .hire-taxi__fog {
+      z-index: 0;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #ffffffeb;
+    }
+
+    .hire-taxi__content {
+      max-width: 440px;
+      margin: auto;
+      z-index: 1;
+      position: relative;
+    }
+
+    .hire-taxi__title {
+      display: flex;
+      padding: 0 20px;
+      align-items: center;
+    }
   }
 
   @media all and (orientation: landscape) {
@@ -179,29 +180,6 @@
     }
   }
 
-  .hire-taxi__fog {
-    z-index: 0;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: #ffffffeb;
-  }
-
-  .hire-taxi__content {
-    max-width: 440px;
-    margin: auto;
-    z-index: 1;
-    position: relative;
-  }
-
-  h1 {
-    display: flex;
-    padding: 0 20px;
-    align-items: center;
-  }
-
   .icon-taxi {
     font-size: 76px;
     margin-left: 34px;
@@ -213,13 +191,5 @@
   .taxi-far-away {
     transform: translateX(500px);
     opacity: 0;
-  }
-
-  .w-100 {
-    width: 100% !important;
-  }
-
-  .pl-2 {
-    padding-left: 1.125em;
   }
 </style>

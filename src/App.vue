@@ -8,7 +8,7 @@
 
 <script>
 // import ApolloExample from './components/ApolloExample.vue'
-import HireTaxi from './components/HireTaxi.vue'
+import HireTaxi from './components/hire-taxi/HireTaxi.vue'
 
 export default {
   name: 'App',
