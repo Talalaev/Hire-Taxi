@@ -4,6 +4,8 @@ Easy to use form for hire taxi
 
 `npm i`
 
+generate graphql schema `npm run apollo`
+
 run client `npm run serve`
 
 run graphql server `npm run apollo:start`
